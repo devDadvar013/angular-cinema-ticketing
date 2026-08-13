@@ -1,0 +1,25 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" routerLink="/" aria-label="سینماتیکت">
+      <span class="brand-mark">🎬</span>
+      <span class="brand-name">سینماتیکت</span>
+    </a>
+
+    <nav class="nav">
+      <a routerLink="/" [class.active]="nowShowingActive()">اکران</a>
+      <a routerLink="/" fragment="movies" [class.active]="moviesActive()">فیلم‌ها</a>
+    </nav>
+  </div>
+</header>
+
+<main class="site-main">
+  <app-breadcrumbs />
+  <router-outlet />
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>سینماتیکت — سامانه خرید آنلاین بلیط سینما</p>
+    <p class="muted">ساخته‌شده با Angular و Server-Side Rendering</p>
+  </div>
+</footer>

@@ -1,0 +1,28 @@
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">به سینماتیکت خوش آمدید 🎬</p>
+    <h1 class="hero-title">خرید بلیط سینما،<br />ساده و آنلاین</h1>
+    <p class="hero-sub">
+      فیلم موردعلاقه‌تان را انتخاب کنید، صندلی‌تان را رزرو کنید و بدون ایستادن در صف،
+      به تماشا بنشینید.
+    </p>
+    <div class="hero-stats">
+      <span class="stat"><strong>{{ movieCount() }}</strong> فیلم در حال اکران</span>
+      <span class="divider"></span>
+      <span class="stat">امروز، <strong>{{ todayLabel() }}</strong></span>
+    </div>
+  </div>
+</section>
+
+<section id="movies" class="container listing">
+  <div class="listing-head">
+    <h2 class="section-title">فیلم‌های در حال اکران</h2>
+    <span class="muted">{{ movieCount() }} عنوان</span>
+  </div>
+
+  <div class="grid">
+    @for (movie of movies(); track movie.id) {
+      <app-movie-card [movie]="movie" />
+    }
+  </div>
+</section>

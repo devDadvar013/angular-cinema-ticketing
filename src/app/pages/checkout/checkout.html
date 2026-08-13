@@ -1,0 +1,78 @@
+<div class="container page">
+  @if (booking(); as booking) {
+    @if (showtime(); as showtime) {
+      @if (movie(); as movie) {
+        @if (booking.confirmed) {
+          <div class="empty-state success">
+            <p class="empty-emoji">✅</p>
+            <h1>پرداخت با موفقیت انجام شد</h1>
+            <p class="muted">
+              بلیط شما رزرو شد. کد پیگیری خود را نزد خود نگه دارید و هنگام ورود به سینما ارائه دهید.
+            </p>
+            <div class="reference" dir="ltr">{{ booking.referenceCode }}</div>
+            <a class="btn btn--primary" routerLink="/">بازگشت به صفحه اصلی</a>
+          </div>
+        } @else {
+          <div class="checkout-grid">
+            <div class="ticket">
+              <div class="ticket-head" [style.background]="'linear-gradient(160deg, ' + movie.accentFrom + ', ' + movie.accentTo + ')'">
+                <h1>{{ movie.title }}</h1>
+                <span dir="ltr">{{ movie.originalTitle }}</span>
+              </div>
+
+              <div class="ticket-body">
+                <div class="row">
+                  <span class="label">تاریخ</span>
+                  <span class="value">{{ faDate(showtime.date) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">ساعت</span>
+                  <span class="value">{{ faTime(showtime.time) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">سالن</span>
+                  <span class="value">{{ showtime.hall }} · {{ showtime.format }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">صندلی‌ها</span>
+                  <span class="value">
+                    {{ booking.seatIds.map((id) => faId(id)).join('، ') }}
+                  </span>
+                </div>
+                <div class="row total-row">
+                  <span class="label">مبلغ کل</span>
+                  <span class="value total">{{ price(booking.totalPrice) }} تومان</span>
+                </div>
+              </div>
+            </div>
+
+            <aside class="pay-panel">
+              <h2>پرداخت</h2>
+              <p class="muted">برای تأیید نهایی رزرو، پرداخت را انجام دهید.</p>
+
+              <label class="method">
+                <input type="radio" name="method" checked />
+                <span>پرداخت آنلاین (درگاه بانکی)</span>
+              </label>
+              <label class="method">
+                <input type="radio" name="method" />
+                <span>پرداخت در محل سینما</span>
+              </label>
+
+              <button type="button" class="btn btn--primary btn--block" (click)="pay()">
+                پرداخت {{ price(booking.totalPrice) }} تومان
+              </button>
+            </aside>
+          </div>
+        }
+      }
+    }
+  } @else {
+    <div class="empty-state">
+      <p class="empty-emoji">🛒</p>
+      <h2>خریدی در جریان نیست</h2>
+      <p class="muted">هنوز صندلی‌ای انتخاب نکرده‌اید. از بین فیلم‌ها یک سانس انتخاب کنید.</p>
+      <a class="btn btn--primary" routerLink="/">مشاهده فیلم‌ها</a>
+    </div>
+  }
+</div>

@@ -1,0 +1,17 @@
+@if (trail().length > 1) {
+  <nav class="breadcrumbs" aria-label="مسیر صفحه">
+    <div class="container">
+      <ol>
+        @for (crumb of trail(); track $index; let last = $last) {
+          <li>
+            @if (crumb.link && !last) {
+              <a [routerLink]="crumb.link">{{ crumb.label }}</a>
+            } @else {
+              <span class="current" aria-current="page">{{ crumb.label }}</span>
+            }
+          </li>
+        }
+      </ol>
+    </div>
+  </nav>
+}

@@ -1,0 +1,107 @@
+@if (showtime(); as showtime) {
+  @if (movie(); as movie) {
+    <div class="container page">
+      <a class="back" [routerLink]="['/movies', movie.id]">→ بازگشت به سانس‌ها</a>
+
+      <div class="head">
+        <h1 class="title">انتخاب صندلی</h1>
+        <p class="muted">
+          {{ movie.title }} · {{ faDate(showtime.date) }} · ساعت {{ faTime(showtime.time) }} ·
+          {{ showtime.hall }} · {{ showtime.format }}
+        </p>
+      </div>
+
+      <div class="layout">
+        <div class="hall">
+          <div class="screen">
+            <span>پرده نمایش</span>
+          </div>
+
+          <div class="seat-rows">
+            @for (row of rows(); track row.row) {
+              <div class="seat-row">
+                <span class="row-label">{{ row.row }}</span>
+                <div class="seats">
+                  @for (seat of row.seats; track seat.id) {
+                    <button
+                      type="button"
+                      class="seat"
+                      [class.vip]="seat.vip"
+                      [class.reserved]="seat.status === 'reserved'"
+                      [class.selected]="selectedSet().has(seat.id)"
+                      [disabled]="seat.status === 'reserved'"
+                      [attr.aria-label]="'صندلی ' + faId(seat.id)"
+                      (click)="toggleSeat(seat)"
+                    >
+                      {{ seatNumber(seat) }}
+                    </button>
+                    @if (seat.number === 6) {
+                      <span class="aisle"></span>
+                    }
+                  }
+                </div>
+                <span class="row-label">{{ row.row }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="legend">
+            <span><i class="swatch available"></i> آزاد</span>
+            <span><i class="swatch selected"></i> انتخاب‌شده</span>
+            <span><i class="swatch reserved"></i> رزرو شده</span>
+            <span><i class="swatch vip"></i> ویژه (VIP)</span>
+          </div>
+        </div>
+
+        <aside class="summary">
+          <h2>خلاصه خرید</h2>
+
+          <div class="summary-row">
+            <span>بلیط معمولی</span>
+            <span>{{ price(showtime.basePrice) }} تومان</span>
+          </div>
+          <div class="summary-row">
+            <span>بلیط ویژه (VIP)</span>
+            <span>{{ price(showtime.vipPrice) }} تومان</span>
+          </div>
+
+          <hr />
+
+          <div class="summary-row">
+            <span>صندلی‌های انتخابی</span>
+            <span class="seats-chosen">
+              @if (selection().count === 0) {
+                <span class="muted">—</span>
+              } @else {
+                {{ selectedIds().map((id) => faId(id)).join('، ') }}
+              }
+            </span>
+          </div>
+
+          <div class="total">
+            <span>مبلغ قابل پرداخت</span>
+            <strong>{{ price(selection().total) }} تومان</strong>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn--primary btn--block"
+            [disabled]="selection().count === 0"
+            (click)="continue()"
+          >
+            ادامه و پرداخت
+          </button>
+        </aside>
+      </div>
+    </div>
+  }
+} @else {
+  <div class="container page">
+    <div class="empty-state">
+      <p class="empty-emoji">🎫</p>
+      <h2>سانس پیدا نشد</h2>
+      <p class="muted">سانس انتخابی دیگر در دسترس نیست.</p>
+      <a class="btn btn--primary" routerLink="/">بازگشت به خانه</a>
+    </div>
+  </div>
+}

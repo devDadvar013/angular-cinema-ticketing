@@ -1,0 +1,85 @@
+@if (movie(); as movie) {
+  <div class="container page">
+    <a class="back" routerLink="/">→ بازگشت به فیلم‌ها</a>
+
+    <div class="detail">
+      <div class="poster" [style.background]="'linear-gradient(160deg, ' + movie.accentFrom + ', ' + movie.accentTo + ')'">
+        <span class="age">{{ movie.ageRating }}</span>
+        <div class="poster-text">
+          <h2>{{ movie.title }}</h2>
+          <span>{{ movie.originalTitle }}</span>
+        </div>
+      </div>
+
+      <div class="info">
+        <h1 class="title">{{ movie.title }}</h1>
+        <p class="original" dir="ltr">{{ movie.originalTitle }} · {{ movie.releaseYear }}</p>
+
+        <div class="facts">
+          <span class="rating"><span class="star">★</span> {{ rating() }}</span>
+          <span class="dot">•</span>
+          <span>{{ duration() }}</span>
+          <span class="dot">•</span>
+          @for (genre of movie.genres; track genre) {
+            <span class="chip">{{ genre }}</span>
+          }
+        </div>
+
+        <p class="synopsis">{{ movie.synopsis }}</p>
+
+        <dl class="credits">
+          <div>
+            <dt>کارگردان</dt>
+            <dd>{{ movie.director }}</dd>
+          </div>
+          <div>
+            <dt>بازیگران</dt>
+            <dd>{{ movie.cast.join('، ') }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="showtimes">
+      <h2 class="section-title">سانس‌ها و خرید بلیط</h2>
+
+      <div class="date-tabs">
+        @for (date of dates(); track date) {
+          <button
+            type="button"
+            class="date-tab"
+            [class.active]="date === selectedDate()"
+            (click)="selectDate(date)"
+          >
+            {{ faDate(date) }}
+          </button>
+        }
+      </div>
+
+      <div class="showtime-list">
+        @for (showtime of selectedShowtimes(); track showtime.id) {
+          <div class="showtime-card">
+            <div class="time">
+              <strong>{{ faTime(showtime.time) }}</strong>
+              <span class="hall">{{ showtime.hall }}</span>
+            </div>
+            <span class="format">{{ showtime.format }}</span>
+            <span class="price">از {{ priceFrom(showtime) }} تومان</span>
+            <a class="btn btn--primary" [routerLink]="['/booking', showtime.id]">خرید بلیط</a>
+          </div>
+        } @empty {
+          <p class="muted">سانسی برای تاریخ انتخابی موجود نیست.</p>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="container page">
+    <div class="empty-state">
+      <p class="empty-emoji">🎬</p>
+      <h2>فیلم پیدا نشد</h2>
+      <p class="muted">ممکن است این فیلم دیگر در حال اکران نباشد.</p>
+      <a class="btn btn--primary" routerLink="/">بازگشت به فیلم‌ها</a>
+    </div>
+  </div>
+}
