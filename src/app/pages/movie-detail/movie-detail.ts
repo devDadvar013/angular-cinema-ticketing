@@ -1,10 +1,12 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterLink } from '@angular/router';
+import { of, switchMap } from 'rxjs';
 import { CinemaService } from '../../services/cinema.service';
 import { Showtime } from '../../models/movie';
 import { formatDuration, formatFaDate, formatPrice, formatTime, toFa } from '../../utils/format';
@@ -27,8 +29,15 @@ export class MovieDetail {
 
   readonly id = input<string>('');
 
-  protected readonly movie = computed(() => this.cinema.getMovie(this.id()));
-  protected readonly showtimes = computed(() => this.cinema.getShowtimesForMovie(this.id()));
+  private readonly movie$ = toObservable(this.id).pipe(
+    switchMap((id) => (id ? this.cinema.getMovie(id) : of(undefined))),
+  );
+  protected readonly movie = toSignal(this.movie$, { initialValue: undefined });
+
+  private readonly showtimes$ = toObservable(this.id).pipe(
+    switchMap((id) => (id ? this.cinema.getShowtimesForMovie(id) : of([]))),
+  );
+  protected readonly showtimes = toSignal(this.showtimes$, { initialValue: [] });
 
   protected readonly dates = computed(() => {
     const seen = new Set<string>();

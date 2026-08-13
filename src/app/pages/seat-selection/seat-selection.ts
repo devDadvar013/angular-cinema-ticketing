@@ -1,8 +1,10 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { Router, RouterLink } from '@angular/router';
+import { of, switchMap } from 'rxjs';
 import { BookingService } from '../../services/booking.service';
 import { CinemaService } from '../../services/cinema.service';
 import { Seat } from '../../models/movie';
@@ -21,9 +23,22 @@ export class SeatSelection {
 
   readonly id = input<string>('');
 
-  protected readonly showtime = computed(() => this.cinema.getShowtime(this.id()));
-  protected readonly movie = computed(() => this.cinema.getMovie(this.showtime()?.movieId ?? ''));
-  protected readonly rows = computed(() => this.cinema.getSeats(this.id()));
+  private readonly showtime$ = toObservable(this.id).pipe(
+    switchMap((id) => (id ? this.cinema.getShowtime(id) : of(undefined))),
+  );
+  protected readonly showtime = toSignal(this.showtime$, { initialValue: undefined });
+
+  private readonly movie$ = toObservable(this.showtime).pipe(
+    switchMap((showtime) =>
+      showtime ? this.cinema.getMovie(showtime.movieId) : of(undefined),
+    ),
+  );
+  protected readonly movie = toSignal(this.movie$, { initialValue: undefined });
+
+  private readonly rows$ = toObservable(this.id).pipe(
+    switchMap((id) => (id ? this.cinema.getSeats(id) : of([]))),
+  );
+  protected readonly rows = toSignal(this.rows$, { initialValue: [] });
 
   protected readonly selectedIds = signal<string[]>([]);
   protected readonly selectedSet = computed(() => new Set(this.selectedIds()));
@@ -80,7 +95,9 @@ export class SeatSelection {
     if (!showtime || this.selection().count === 0) {
       return;
     }
-    this.booking.start(showtime.id, this.selectedIds(), this.selection().total);
-    this.router.navigate(['/checkout']);
+    this.booking.start(showtime.id, this.selectedIds()).subscribe({
+      next: () => this.router.navigate(['/checkout']),
+      error: (err) => console.error('Booking failed:', err),
+    });
   }
 }

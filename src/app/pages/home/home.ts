@@ -1,11 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { MovieCard } from '../../components/movie-card/movie-card';
 import { CinemaService } from '../../services/cinema.service';
-import { Movie } from '../../models/movie';
 import { formatFaDate, toFa } from '../../utils/format';
 
 const TODAY_ISO = '2026-08-13';
@@ -19,7 +19,7 @@ const TODAY_ISO = '2026-08-13';
 export class Home {
   private readonly cinema = inject(CinemaService);
 
-  protected readonly movies = signal<Movie[]>(this.cinema.getMovies());
+  protected readonly movies = toSignal(this.cinema.getMovies(), { initialValue: [] });
   protected readonly todayLabel = signal(formatFaDate(TODAY_ISO));
-  protected readonly movieCount = signal(toFa(this.cinema.getMovies().length));
+  protected readonly movieCount = computed(() => toFa(this.movies().length));
 }

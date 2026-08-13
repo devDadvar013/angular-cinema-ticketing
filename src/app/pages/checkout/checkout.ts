@@ -1,9 +1,11 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterLink } from '@angular/router';
+import { of, switchMap } from 'rxjs';
 import { BookingService } from '../../services/booking.service';
 import { CinemaService } from '../../services/cinema.service';
 import { formatFaDate, formatPrice, formatTime, toFa } from '../../utils/format';
@@ -20,15 +22,17 @@ export class Checkout {
 
   protected readonly booking = this.bookingService.booking;
 
-  protected readonly showtime = computed(() => {
-    const booking = this.booking();
-    return booking ? this.cinema.getShowtime(booking.showtimeId) : undefined;
-  });
+  private readonly showtime$ = toObservable(this.booking).pipe(
+    switchMap((booking) => (booking ? this.cinema.getShowtime(booking.showtimeId) : of(undefined))),
+  );
+  protected readonly showtime = toSignal(this.showtime$, { initialValue: undefined });
 
-  protected readonly movie = computed(() => {
-    const showtime = this.showtime();
-    return showtime ? this.cinema.getMovie(showtime.movieId) : undefined;
-  });
+  private readonly movie$ = toObservable(this.showtime).pipe(
+    switchMap((showtime) =>
+      showtime ? this.cinema.getMovie(showtime.movieId) : of(undefined),
+    ),
+  );
+  protected readonly movie = toSignal(this.movie$, { initialValue: undefined });
 
   protected faTime(time: string): string {
     return formatTime(time);
@@ -47,6 +51,12 @@ export class Checkout {
   }
 
   protected pay(): void {
-    this.bookingService.confirm();
+    const booking = this.booking();
+    if (!booking || booking.confirmed) {
+      return;
+    }
+    this.bookingService.confirm(booking.id).subscribe({
+      error: (err) => console.error('Confirm failed:', err),
+    });
   }
 }

@@ -1,52 +1,62 @@
-import { Injectable } from '@angular/core';
-import { MOVIES, SHOWTIMES } from '../data/cinema.data';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { catchError, Observable, of, shareReplay, tap } from 'rxjs';
 import { Movie, SeatRow, Showtime } from '../models/movie';
-
-const ROW_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-const SEATS_PER_ROW = 12;
-const VIP_ROWS = new Set(['G', 'H']);
+import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
 export class CinemaService {
-  getMovies(): Movie[] {
-    return MOVIES;
-  }
+  private readonly http = inject(HttpClient);
 
-  getMovie(id: string): Movie | undefined {
-    return MOVIES.find((m) => m.id === id);
-  }
+  /** Replays successful responses so several components (page + breadcrumbs) share one HTTP call. */
+  private readonly cache = new Map<string, Observable<unknown>>();
 
-  getShowtime(id: string): Showtime | undefined {
-    return SHOWTIMES.find((s) => s.id === id);
-  }
-
-  getShowtimesForMovie(movieId: string): Showtime[] {
-    return SHOWTIMES.filter((s) => s.movieId === movieId).sort(
-      (a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time),
+  getMovies(nowShowing = true): Observable<Movie[]> {
+    return this.getOrCache(`movies:${nowShowing}`, () =>
+      this.http.get<Movie[]>(`${API_BASE_URL}/movies`, {
+        params: nowShowing ? { nowShowing: 'true' } : {},
+      }),
+      [],
     );
   }
 
-  /** تولید قطعی (بدون تصادف) صندلی‌های سالن تا SSR و کلاینت یکسان بمانند */
-  getSeats(showtimeId: string): SeatRow[] {
-    let salt = 0;
-    for (const ch of showtimeId) {
-      salt += ch.charCodeAt(0);
-    }
+  getMovie(id: string): Observable<Movie | undefined> {
+    return this.getOrCache(`movie:${id}`, () =>
+      this.http.get<Movie>(`${API_BASE_URL}/movies/${id}`),
+    );
+  }
 
-    return ROW_LABELS.map((row, rowIndex) => ({
-      row,
-      seats: Array.from({ length: SEATS_PER_ROW }, (_, i) => {
-        const number = i + 1;
-        const vip = VIP_ROWS.has(row);
-        const reserved = (rowIndex * 7 + number * 13 + salt) % 11 < 2;
-        return {
-          id: `${row}${number}`,
-          row,
-          number,
-          status: reserved ? ('reserved' as const) : ('available' as const),
-          vip,
-        };
-      }),
-    }));
+  getShowtime(id: string): Observable<Showtime | undefined> {
+    return this.getOrCache(`showtime:${id}`, () =>
+      this.http.get<Showtime>(`${API_BASE_URL}/showtimes/${id}`),
+    );
+  }
+
+  getShowtimesForMovie(movieId: string): Observable<Showtime[]> {
+    return this.getOrCache(
+      `showtimes:${movieId}`,
+      () => this.http.get<Showtime[]>(`${API_BASE_URL}/showtimes`, { params: { movieId } }),
+      [],
+    );
+  }
+
+  /** Seat map for a showtime; seats held by active bookings arrive as `reserved`.
+   *  Not cached on purpose so a fresh visit always reflects current bookings. */
+  getSeats(showtimeId: string): Observable<SeatRow[]> {
+    return this.http.get<SeatRow[]>(`${API_BASE_URL}/showtimes/${showtimeId}/seats`);
+  }
+
+  private getOrCache<T>(key: string, make: () => Observable<T>, fallback?: T): Observable<T> {
+    const existing = this.cache.get(key) as Observable<T> | undefined;
+    if (existing) {
+      return existing;
+    }
+    const shared = make().pipe(shareReplay({ bufferSize: 1, refCount: false }));
+    this.cache.set(key, shared);
+    // Evict on error (so a later visit can retry) and shield callers with a safe fallback.
+    return shared.pipe(
+      tap({ error: () => this.cache.delete(key) }),
+      catchError(() => of(fallback as T)),
+    );
   }
 }
