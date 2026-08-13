@@ -1,11 +1,13 @@
 import { Component, computed, input } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { Movie } from '../../models/movie';
 import { formatDuration, toFa } from '../../utils/format';
 
 @Component({
   selector: 'app-movie-card',
-  imports: [RouterLink],
+  imports: [RouterLink, MatCardModule, MatChipsModule],
   templateUrl: './movie-card.html',
   styleUrl: './movie-card.scss',
 })

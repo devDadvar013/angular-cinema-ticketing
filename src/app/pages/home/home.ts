@@ -1,4 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { RouterLink } from '@angular/router';
 import { MovieCard } from '../../components/movie-card/movie-card';
 import { CinemaService } from '../../services/cinema.service';
 import { Movie } from '../../models/movie';
@@ -8,7 +12,7 @@ const TODAY_ISO = '2026-08-13';
 
 @Component({
   selector: 'app-home',
-  imports: [MovieCard],
+  imports: [RouterLink, MatButtonModule, MatCardModule, MatChipsModule, MovieCard],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

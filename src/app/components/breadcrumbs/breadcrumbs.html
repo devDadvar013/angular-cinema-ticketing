@@ -1,12 +1,13 @@
 @if (trail().length > 1) {
   <nav class="breadcrumbs" aria-label="مسیر صفحه">
-    <div class="container">
+    <div class="container breadcrumb-inner">
       <ol>
         @for (crumb of trail(); track $index; let last = $last) {
           <li>
             @if (crumb.link && !last) {
-              <a [routerLink]="crumb.link">{{ crumb.label }}</a>
+              <a mat-button class="crumb-link" [routerLink]="crumb.link">{{ crumb.label }}</a>
             } @else {
+              <span class="separator" aria-hidden="true">‹</span>
               <span class="current" aria-current="page">{{ crumb.label }}</span>
             }
           </li>

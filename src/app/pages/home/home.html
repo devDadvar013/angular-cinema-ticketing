@@ -1,23 +1,46 @@
-<section class="hero">
+<section class="hero-section">
   <div class="container">
-    <p class="hero-eyebrow">به سینماتیکت خوش آمدید 🎬</p>
-    <h1 class="hero-title">خرید بلیط سینما،<br />ساده و آنلاین</h1>
-    <p class="hero-sub">
-      فیلم موردعلاقه‌تان را انتخاب کنید، صندلی‌تان را رزرو کنید و بدون ایستادن در صف،
-      به تماشا بنشینید.
-    </p>
-    <div class="hero-stats">
-      <span class="stat"><strong>{{ movieCount() }}</strong> فیلم در حال اکران</span>
-      <span class="divider"></span>
-      <span class="stat">امروز، <strong>{{ todayLabel() }}</strong></span>
-    </div>
+    <mat-card class="hero-card" appearance="outlined">
+      <span class="hero-orbit hero-orbit-one" aria-hidden="true"></span>
+      <span class="hero-orbit hero-orbit-two" aria-hidden="true"></span>
+      <mat-card-content class="hero-content">
+        <div class="hero-copy">
+          <p class="section-eyebrow">سینما، همین نزدیکی 🎬</p>
+          <h1 class="hero-title">یک شب خوب،<br /><span>با یک فیلم خوب</span></h1>
+          <p class="hero-sub">
+            فیلم موردعلاقه‌تان را انتخاب کنید، صندلی‌تان را رزرو کنید و بدون ایستادن در صف،
+            به تماشا بنشینید.
+          </p>
+          <div class="hero-actions">
+            <a mat-flat-button class="cinema-primary hero-cta" routerLink="/" fragment="movies">
+              مشاهده فیلم‌ها
+              <span aria-hidden="true">←</span>
+            </a>
+            <span class="hero-note"><span class="live-dot"></span> رزرو آنلاین، سریع و مطمئن</span>
+          </div>
+        </div>
+
+        <div class="hero-ticket" aria-hidden="true">
+          <div class="ticket-sheen"></div>
+          <span class="ticket-kicker">CINEMA TICKET</span>
+          <span class="ticket-reel">🎞️</span>
+          <strong>امشب<br />سینما؟</strong>
+          <span class="ticket-line"></span>
+          <span class="ticket-meta">YOUR SEAT IS WAITING</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </section>
 
 <section id="movies" class="container listing">
-  <div class="listing-head">
-    <h2 class="section-title">فیلم‌های در حال اکران</h2>
-    <span class="muted">{{ movieCount() }} عنوان</span>
+  <div class="listing-heading">
+    <div>
+      <p class="section-eyebrow">انتخاب شما</p>
+      <h2 class="section-title">فیلم‌های در حال اکران</h2>
+      <p class="section-subtitle">برای تماشای امشب، یک داستان تازه انتخاب کنید.</p>
+    </div>
+    <mat-chip class="count-chip">{{ movieCount() }} عنوان</mat-chip>
   </div>
 
   <div class="grid">

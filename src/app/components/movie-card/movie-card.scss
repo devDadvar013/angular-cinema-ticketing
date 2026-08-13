@@ -1,105 +1,157 @@
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+:host {
+  display: block;
+  min-width: 0;
+}
 
-  &:hover {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
-    box-shadow: var(--shadow);
-  }
+.movie-card-link {
+  display: block;
+  height: 100%;
+}
+
+.movie-card {
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--cinema-radius) !important;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.movie-card-link:hover .movie-card,
+.movie-card-link:focus-visible .movie-card {
+  border-color: rgba(255, 189, 39, 0.55) !important;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
+  transform: translateY(-6px);
 }
 
 .poster {
   position: relative;
-  aspect-ratio: 2 / 3;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 1rem;
+  min-height: 22rem;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 1.25rem;
   color: #fff;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-
-  .age {
-    position: absolute;
-    top: 0.75rem;
-    inset-inline-start: 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-  }
-
-  .poster-title {
-    font-size: 1.35rem;
-    font-weight: 800;
-    line-height: 1.4;
-  }
-
-  .poster-original {
-    font-size: 0.8rem;
-    opacity: 0.85;
-    letter-spacing: 0.03em;
-    direction: ltr;
-    text-align: end;
-  }
+  isolation: isolate;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.55);
 }
 
-.meta {
+.poster::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.72) 100%);
+  content: '';
+}
+
+.poster-glow {
+  position: absolute;
+  top: -5rem;
+  inset-inline-end: -4rem;
+  width: 12rem;
+  height: 12rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.5rem rgba(255, 255, 255, 0.06),
+    0 0 0 3rem rgba(255, 255, 255, 0.04);
+  opacity: 0.8;
+}
+
+.age {
+  position: absolute;
+  top: 1rem;
+  inset-inline-start: 1rem;
+  z-index: 1;
+  min-width: 2.5rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(7, 9, 14, 0.4);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.poster-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.poster-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.poster-original {
+  direction: ltr;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  opacity: 0.84;
+  text-align: start;
+}
+
+.movie-content {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1.1rem 1.15rem 1.2rem !important;
+}
+
+.movie-heading {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 850;
+}
+
+.original {
+  margin: 0.15rem 0 0;
+  color: var(--cinema-muted);
+  direction: ltr;
+  font-size: 0.74rem;
+  text-align: start;
+}
+
+.rating {
+  flex: 0 0 auto;
+  padding: 0.18rem 0.45rem;
+  border-radius: 0.55rem;
+  background: rgba(255, 189, 39, 0.12);
+  color: var(--cinema-gold);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.duration {
+  display: inline-flex;
+  align-items: center;
   gap: 0.35rem;
-  padding: 0.25rem 1rem 1rem;
+  color: var(--cinema-muted);
+  font-size: 0.8rem;
+}
 
-  .title {
-    margin: 0;
-    font-size: 1.05rem;
-    font-weight: 700;
-  }
+.duration span:first-child {
+  color: var(--cinema-gold);
+  font-size: 1rem;
+}
 
-  .original {
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--muted);
-    direction: ltr;
-    text-align: end;
-  }
+.genres {
+  min-height: 1.85rem;
+}
 
-  .stats {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.82rem;
-    color: var(--muted);
-
-    .rating {
-      color: var(--accent);
-      font-weight: 700;
-
-      .star {
-        font-size: 0.9rem;
-      }
-    }
-
-    .dot {
-      opacity: 0.5;
-    }
-  }
-
-  .genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 0.2rem;
+@media (max-width: 600px) {
+  .poster {
+    min-height: 18rem;
   }
 }

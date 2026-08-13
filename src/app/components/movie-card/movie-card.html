@@ -1,24 +1,33 @@
-<a class="card" [routerLink]="['/movies', movie().id]">
-  <div class="poster" [style.background]="posterGradient()">
-    <span class="age">{{ movie().ageRating }}</span>
-    <span class="poster-title">{{ movie().title }}</span>
-    <span class="poster-original">{{ movie().originalTitle }}</span>
-  </div>
-
-  <div class="meta">
-    <h3 class="title">{{ movie().title }}</h3>
-    <p class="original">{{ movie().originalTitle }}</p>
-
-    <div class="stats">
-      <span class="rating"><span class="star">★</span> {{ rating() }}</span>
-      <span class="dot">•</span>
-      <span>{{ duration() }}</span>
+<a class="movie-card-link" [routerLink]="['/movies', movie().id]">
+  <mat-card class="movie-card" appearance="outlined">
+    <div class="poster" [style.background]="posterGradient()">
+      <span class="poster-glow" aria-hidden="true"></span>
+      <span class="age">{{ movie().ageRating }}</span>
+      <div class="poster-copy">
+        <span class="poster-title">{{ movie().title }}</span>
+        <span class="poster-original">{{ movie().originalTitle }}</span>
+      </div>
     </div>
 
-    <div class="genres">
-      @for (genre of movie().genres; track genre) {
-        <span class="chip">{{ genre }}</span>
-      }
-    </div>
-  </div>
+    <mat-card-content class="movie-content">
+      <div class="movie-heading">
+        <div>
+          <h3 class="title">{{ movie().title }}</h3>
+          <p class="original">{{ movie().originalTitle }}</p>
+        </div>
+        <span class="rating"><span aria-hidden="true">★</span> {{ rating() }}</span>
+      </div>
+
+      <div class="duration">
+        <span aria-hidden="true">◷</span>
+        <span>{{ duration() }}</span>
+      </div>
+
+      <mat-chip-set class="genres" aria-label="ژانرهای فیلم">
+        @for (genre of movie().genres; track genre) {
+          <mat-chip>{{ genre }}</mat-chip>
+        }
+      </mat-chip-set>
+    </mat-card-content>
+  </mat-card>
 </a>

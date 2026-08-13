@@ -1,60 +1,63 @@
 :host {
   display: flex;
-  flex-direction: column;
   min-height: 100dvh;
+  flex-direction: column;
 }
 
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  z-index: 20;
+  min-height: 4.5rem;
+  background: color-mix(in srgb, var(--cinema-bg) 82%, transparent);
+  box-shadow: 0 1px 0 var(--cinema-border);
+  backdrop-filter: blur(18px);
 }
 
 .header-inner {
   display: flex;
+  min-height: 4.5rem;
   align-items: center;
-  justify-content: space-between;
-  height: 4rem;
+  gap: 1rem;
 }
 
 .brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-weight: 800;
-  font-size: 1.2rem;
+  min-width: auto !important;
+  padding-inline: 0.25rem !important;
+  color: var(--cinema-text) !important;
+  font-size: 1.12rem;
+  font-weight: 900 !important;
+}
 
-  .brand-mark {
-    font-size: 1.4rem;
-  }
+.brand-mark {
+  margin-inline-end: 0.5rem;
+  font-size: 1.45rem;
+}
+
+.toolbar-spacer {
+  flex: 1;
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+}
 
-  > a {
-    padding: 0.5rem 0.9rem;
-    border-radius: 999px;
-    color: var(--muted);
-    font-size: 0.95rem;
-    transition:
-      color 0.15s ease,
-      background 0.15s ease;
+.nav a {
+  min-width: 5rem;
+  border-radius: 999px !important;
+  color: var(--cinema-muted) !important;
+}
 
-    &:hover {
-      color: var(--text);
-    }
+.nav a:hover,
+.nav a.active {
+  color: var(--cinema-text) !important;
+  background: rgba(255, 189, 39, 0.12) !important;
+}
 
-    &.active {
-      color: var(--text);
-      background: var(--surface-2);
-    }
-  }
+.nav a.active {
+  box-shadow: inset 0 0 0 1px rgba(255, 189, 39, 0.16);
 }
 
 .site-main {
@@ -62,12 +65,52 @@
 }
 
 .site-footer {
-  border-top: 1px solid var(--border);
-  padding: 2rem 0;
-  text-align: center;
-  font-size: 0.9rem;
+  border-top: 1px solid var(--cinema-border);
+  background: rgba(15, 19, 29, 0.72);
+}
 
-  p {
-    margin: 0.25rem 0;
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  font-size: 0.86rem;
+}
+
+.footer-inner strong {
+  color: var(--cinema-gold);
+}
+
+.footer-inner p {
+  margin: 0.25rem 0 0;
+}
+
+.footer-note {
+  margin: 0 !important;
+}
+
+@media (max-width: 600px) {
+  .site-header,
+  .header-inner {
+    min-height: 4rem;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .brand-mark {
+    font-size: 1.2rem;
+  }
+
+  .nav a {
+    min-width: auto;
+    padding-inline: 0.7rem !important;
+  }
+
+  .footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

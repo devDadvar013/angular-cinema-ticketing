@@ -1,85 +1,116 @@
 @if (movie(); as movie) {
   <div class="container page">
-    <a class="back" routerLink="/">→ بازگشت به فیلم‌ها</a>
+    <a mat-button class="back-link" routerLink="/">
+      <span aria-hidden="true">→</span>
+      بازگشت به فیلم‌ها
+    </a>
 
-    <div class="detail">
-      <div class="poster" [style.background]="'linear-gradient(160deg, ' + movie.accentFrom + ', ' + movie.accentTo + ')'">
-        <span class="age">{{ movie.ageRating }}</span>
-        <div class="poster-text">
-          <h2>{{ movie.title }}</h2>
-          <span>{{ movie.originalTitle }}</span>
-        </div>
-      </div>
-
-      <div class="info">
-        <h1 class="title">{{ movie.title }}</h1>
-        <p class="original" dir="ltr">{{ movie.originalTitle }} · {{ movie.releaseYear }}</p>
-
-        <div class="facts">
-          <span class="rating"><span class="star">★</span> {{ rating() }}</span>
-          <span class="dot">•</span>
-          <span>{{ duration() }}</span>
-          <span class="dot">•</span>
-          @for (genre of movie.genres; track genre) {
-            <span class="chip">{{ genre }}</span>
-          }
+    <mat-card class="detail-card" appearance="outlined">
+      <div class="detail-layout">
+        <div class="poster" [style.background]="'linear-gradient(160deg, ' + movie.accentFrom + ', ' + movie.accentTo + ')'">
+          <span class="poster-rings" aria-hidden="true"></span>
+          <span class="age">{{ movie.ageRating }}</span>
+          <div class="poster-text">
+            <h2>{{ movie.title }}</h2>
+            <span dir="ltr">{{ movie.originalTitle }}</span>
+          </div>
         </div>
 
-        <p class="synopsis">{{ movie.synopsis }}</p>
+        <mat-card-content class="info">
+          <div class="title-row">
+            <div>
+              <p class="section-eyebrow">جزئیات فیلم</p>
+              <h1 class="title">{{ movie.title }}</h1>
+              <p class="original" dir="ltr">{{ movie.originalTitle }} · {{ movie.releaseYear }}</p>
+            </div>
+            <div class="rating-card">
+              <span aria-hidden="true">★</span>
+              <strong>{{ rating() }}</strong>
+              <small>امتیاز</small>
+            </div>
+          </div>
 
-        <dl class="credits">
-          <div>
-            <dt>کارگردان</dt>
-            <dd>{{ movie.director }}</dd>
-          </div>
-          <div>
-            <dt>بازیگران</dt>
-            <dd>{{ movie.cast.join('، ') }}</dd>
-          </div>
-        </dl>
+          <mat-chip-set class="facts" aria-label="اطلاعات فیلم">
+            <mat-chip>{{ duration() }}</mat-chip>
+            @for (genre of movie.genres; track genre) {
+              <mat-chip>{{ genre }}</mat-chip>
+            }
+          </mat-chip-set>
+
+          <p class="synopsis">{{ movie.synopsis }}</p>
+
+          <mat-divider></mat-divider>
+
+          <dl class="credits">
+            <div>
+              <dt>کارگردان</dt>
+              <dd>{{ movie.director }}</dd>
+            </div>
+            <div>
+              <dt>بازیگران</dt>
+              <dd>{{ movie.cast.join('، ') }}</dd>
+            </div>
+          </dl>
+        </mat-card-content>
       </div>
-    </div>
+    </mat-card>
 
-    <div class="showtimes">
-      <h2 class="section-title">سانس‌ها و خرید بلیط</h2>
+    <section class="showtimes" aria-labelledby="showtimes-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-eyebrow">برنامه نمایش</p>
+          <h2 id="showtimes-title">سانس‌ها و خرید بلیط</h2>
+        </div>
+        <span class="muted">صندلی‌ات را همین حالا رزرو کن</span>
+      </div>
 
-      <div class="date-tabs">
+      <mat-button-toggle-group
+        class="date-tabs"
+        [value]="selectedDate()"
+        (change)="selectDate($event.value)"
+        aria-label="انتخاب تاریخ نمایش"
+      >
         @for (date of dates(); track date) {
-          <button
-            type="button"
-            class="date-tab"
-            [class.active]="date === selectedDate()"
-            (click)="selectDate(date)"
-          >
-            {{ faDate(date) }}
-          </button>
+          <mat-button-toggle [value]="date">
+            <span class="date-label">{{ faDate(date) }}</span>
+          </mat-button-toggle>
         }
-      </div>
+      </mat-button-toggle-group>
 
       <div class="showtime-list">
         @for (showtime of selectedShowtimes(); track showtime.id) {
-          <div class="showtime-card">
-            <div class="time">
+          <mat-card class="showtime-card" appearance="outlined">
+            <div class="time-block">
               <strong>{{ faTime(showtime.time) }}</strong>
-              <span class="hall">{{ showtime.hall }}</span>
+              <span>{{ showtime.hall }}</span>
             </div>
-            <span class="format">{{ showtime.format }}</span>
-            <span class="price">از {{ priceFrom(showtime) }} تومان</span>
-            <a class="btn btn--primary" [routerLink]="['/booking', showtime.id]">خرید بلیط</a>
-          </div>
+            <mat-chip class="format-chip">{{ showtime.format }}</mat-chip>
+            <div class="showtime-price">
+              <span>شروع قیمت</span>
+              <strong>{{ priceFrom(showtime) }} <small>تومان</small></strong>
+            </div>
+            <a mat-flat-button class="cinema-primary buy-button" [routerLink]="['/booking', showtime.id]">
+              انتخاب صندلی
+              <span aria-hidden="true">←</span>
+            </a>
+          </mat-card>
         } @empty {
-          <p class="muted">سانسی برای تاریخ انتخابی موجود نیست.</p>
+          <mat-card class="empty-state" appearance="outlined">
+            <p class="empty-emoji">🎞️</p>
+            <h2>سانسی برای این تاریخ موجود نیست</h2>
+            <p class="muted">یک تاریخ دیگر را برای تماشای فیلم انتخاب کنید.</p>
+          </mat-card>
         }
       </div>
-    </div>
+    </section>
   </div>
 } @else {
   <div class="container page">
-    <div class="empty-state">
+    <mat-card class="empty-state" appearance="outlined">
       <p class="empty-emoji">🎬</p>
       <h2>فیلم پیدا نشد</h2>
       <p class="muted">ممکن است این فیلم دیگر در حال اکران نباشد.</p>
-      <a class="btn btn--primary" routerLink="/">بازگشت به فیلم‌ها</a>
-    </div>
+      <a mat-flat-button class="cinema-primary" routerLink="/">بازگشت به فیلم‌ها</a>
+    </mat-card>
   </div>
 }

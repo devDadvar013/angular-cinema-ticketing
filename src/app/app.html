@@ -1,16 +1,18 @@
-<header class="site-header">
+<mat-toolbar class="site-header">
   <div class="container header-inner">
-    <a class="brand" routerLink="/" aria-label="سینماتیکت">
-      <span class="brand-mark">🎬</span>
+    <a class="brand" mat-button routerLink="/" aria-label="سینماتیکت">
+      <span class="brand-mark" aria-hidden="true">🎬</span>
       <span class="brand-name">سینماتیکت</span>
     </a>
 
-    <nav class="nav">
-      <a routerLink="/" [class.active]="nowShowingActive()">اکران</a>
-      <a routerLink="/" fragment="movies" [class.active]="moviesActive()">فیلم‌ها</a>
+    <span class="toolbar-spacer"></span>
+
+    <nav class="nav" aria-label="ناوبری اصلی">
+      <a mat-button routerLink="/" [class.active]="nowShowingActive()">اکران</a>
+      <a mat-button routerLink="/" fragment="movies" [class.active]="moviesActive()">فیلم‌ها</a>
     </nav>
   </div>
-</header>
+</mat-toolbar>
 
 <main class="site-main">
   <app-breadcrumbs />
@@ -18,8 +20,11 @@
 </main>
 
 <footer class="site-footer">
-  <div class="container">
-    <p>سینماتیکت — سامانه خرید آنلاین بلیط سینما</p>
-    <p class="muted">ساخته‌شده با Angular و Server-Side Rendering</p>
+  <div class="container footer-inner">
+    <div>
+      <strong>سینماتیکت</strong>
+      <p>سامانه خرید آنلاین بلیط سینما</p>
+    </div>
+    <p class="muted footer-note">ساخته‌شده با Angular و Material</p>
   </div>
 </footer>

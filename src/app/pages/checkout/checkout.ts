@@ -1,4 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatRadioModule } from '@angular/material/radio';
 import { RouterLink } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { CinemaService } from '../../services/cinema.service';
@@ -6,7 +10,7 @@ import { formatFaDate, formatPrice, formatTime, toFa } from '../../utils/format'
 
 @Component({
   selector: 'app-checkout',
-  imports: [RouterLink],
+  imports: [RouterLink, MatButtonModule, MatCardModule, MatDividerModule, MatRadioModule],
   templateUrl: './checkout.html',
   styleUrl: './checkout.scss',
 })

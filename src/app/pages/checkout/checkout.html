@@ -3,24 +3,37 @@
     @if (showtime(); as showtime) {
       @if (movie(); as movie) {
         @if (booking.confirmed) {
-          <div class="empty-state success">
-            <p class="empty-emoji">✅</p>
-            <h1>پرداخت با موفقیت انجام شد</h1>
-            <p class="muted">
-              بلیط شما رزرو شد. کد پیگیری خود را نزد خود نگه دارید و هنگام ورود به سینما ارائه دهید.
-            </p>
-            <div class="reference" dir="ltr">{{ booking.referenceCode }}</div>
-            <a class="btn btn--primary" routerLink="/">بازگشت به صفحه اصلی</a>
-          </div>
+          <mat-card class="success-card" appearance="outlined">
+            <mat-card-content>
+              <div class="success-icon" aria-hidden="true">✓</div>
+              <p class="section-eyebrow">رزرو با موفقیت ثبت شد</p>
+              <h1>پرداخت با موفقیت انجام شد</h1>
+              <p class="muted">
+                بلیط شما رزرو شد. کد پیگیری خود را نزد خود نگه دارید و هنگام ورود به سینما ارائه دهید.
+              </p>
+              <div class="reference" dir="ltr">{{ booking.referenceCode }}</div>
+              <a mat-flat-button class="cinema-primary" routerLink="/">بازگشت به صفحه اصلی</a>
+            </mat-card-content>
+          </mat-card>
         } @else {
+          <div class="checkout-heading">
+            <p class="section-eyebrow">مرحله ۲ از ۲</p>
+            <h1>تکمیل خرید</h1>
+            <p class="muted">جزئیات رزرو را بررسی کنید و روش پرداخت را انتخاب کنید.</p>
+          </div>
+
           <div class="checkout-grid">
-            <div class="ticket">
-              <div class="ticket-head" [style.background]="'linear-gradient(160deg, ' + movie.accentFrom + ', ' + movie.accentTo + ')'">
-                <h1>{{ movie.title }}</h1>
+            <mat-card class="ticket-card" appearance="outlined">
+              <div
+                class="ticket-head"
+                [style.background]="'linear-gradient(135deg, ' + movie.accentFrom + ', ' + movie.accentTo + ')'"
+              >
+                <span class="ticket-label">CINEMA TICKET</span>
+                <h2>{{ movie.title }}</h2>
                 <span dir="ltr">{{ movie.originalTitle }}</span>
               </div>
 
-              <div class="ticket-body">
+              <mat-card-content class="ticket-body">
                 <div class="row">
                   <span class="label">تاریخ</span>
                   <span class="value">{{ faDate(showtime.date) }}</span>
@@ -35,44 +48,60 @@
                 </div>
                 <div class="row">
                   <span class="label">صندلی‌ها</span>
-                  <span class="value">
+                  <span class="value seats-value">
                     {{ booking.seatIds.map((id) => faId(id)).join('، ') }}
                   </span>
                 </div>
+
+                <mat-divider></mat-divider>
+
                 <div class="row total-row">
                   <span class="label">مبلغ کل</span>
                   <span class="value total">{{ price(booking.totalPrice) }} تومان</span>
                 </div>
-              </div>
-            </div>
+              </mat-card-content>
+            </mat-card>
 
-            <aside class="pay-panel">
-              <h2>پرداخت</h2>
-              <p class="muted">برای تأیید نهایی رزرو، پرداخت را انجام دهید.</p>
+            <mat-card class="pay-panel" appearance="outlined">
+              <mat-card-header>
+                <mat-card-title>روش پرداخت</mat-card-title>
+                <mat-card-subtitle>یک روش را برای ادامه انتخاب کنید</mat-card-subtitle>
+              </mat-card-header>
 
-              <label class="method">
-                <input type="radio" name="method" checked />
-                <span>پرداخت آنلاین (درگاه بانکی)</span>
-              </label>
-              <label class="method">
-                <input type="radio" name="method" />
-                <span>پرداخت در محل سینما</span>
-              </label>
+              <mat-card-content>
+                <mat-radio-group class="methods" aria-label="روش پرداخت" value="online">
+                  <mat-radio-button value="online">
+                    <span class="method-copy">
+                      <strong>پرداخت آنلاین</strong>
+                      <small>درگاه بانکی امن</small>
+                    </span>
+                  </mat-radio-button>
+                  <mat-radio-button value="onsite">
+                    <span class="method-copy">
+                      <strong>پرداخت در محل سینما</strong>
+                      <small>رزرو موقت صندلی</small>
+                    </span>
+                  </mat-radio-button>
+                </mat-radio-group>
+              </mat-card-content>
 
-              <button type="button" class="btn btn--primary btn--block" (click)="pay()">
-                پرداخت {{ price(booking.totalPrice) }} تومان
-              </button>
-            </aside>
+              <mat-card-actions>
+                <button mat-flat-button class="cinema-primary pay-button" (click)="pay()">
+                  پرداخت {{ price(booking.totalPrice) }} تومان
+                  <span aria-hidden="true">←</span>
+                </button>
+              </mat-card-actions>
+            </mat-card>
           </div>
         }
       }
     }
   } @else {
-    <div class="empty-state">
+    <mat-card class="empty-state" appearance="outlined">
       <p class="empty-emoji">🛒</p>
       <h2>خریدی در جریان نیست</h2>
       <p class="muted">هنوز صندلی‌ای انتخاب نکرده‌اید. از بین فیلم‌ها یک سانس انتخاب کنید.</p>
-      <a class="btn btn--primary" routerLink="/">مشاهده فیلم‌ها</a>
-    </div>
+      <a mat-flat-button class="cinema-primary" routerLink="/">مشاهده فیلم‌ها</a>
+    </mat-card>
   }
 </div>

@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { filter, map, startWith } from 'rxjs';
 import { BookingService } from '../../services/booking.service';
 import { CinemaService } from '../../services/cinema.service';
@@ -12,7 +13,7 @@ interface Crumb {
 
 @Component({
   selector: 'app-breadcrumbs',
-  imports: [RouterLink],
+  imports: [RouterLink, MatButtonModule],
   templateUrl: './breadcrumbs.html',
   styleUrl: './breadcrumbs.scss',
 })

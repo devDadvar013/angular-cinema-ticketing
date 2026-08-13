@@ -1,4 +1,9 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { RouterLink } from '@angular/router';
 import { CinemaService } from '../../services/cinema.service';
 import { Showtime } from '../../models/movie';
@@ -6,7 +11,14 @@ import { formatDuration, formatFaDate, formatPrice, formatTime, toFa } from '../
 
 @Component({
   selector: 'app-movie-detail',
-  imports: [RouterLink],
+  imports: [
+    RouterLink,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatChipsModule,
+    MatDividerModule,
+  ],
   templateUrl: './movie-detail.html',
   styleUrl: './movie-detail.scss',
 })

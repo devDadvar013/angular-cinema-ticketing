@@ -1,4 +1,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { Router, RouterLink } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { CinemaService } from '../../services/cinema.service';
@@ -7,7 +10,7 @@ import { formatFaDate, formatPrice, formatTime, toFa } from '../../utils/format'
 
 @Component({
   selector: 'app-seat-selection',
-  imports: [RouterLink],
+  imports: [RouterLink, MatButtonModule, MatCardModule, MatDividerModule],
   templateUrl: './seat-selection.html',
   styleUrl: './seat-selection.scss',
 })
