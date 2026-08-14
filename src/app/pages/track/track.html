@@ -1,0 +1,97 @@
+<div class="container page track-page">
+  <div class="track-heading">
+    <p class="section-eyebrow">پیگیری بلیط</p>
+    <h1>تیکت خود را پیگیری کنید</h1>
+    <p class="muted">کد پیگیری که هنگام خرید دریافت کردید را وارد کنید (مثلاً CT-ABC123).</p>
+  </div>
+
+  <mat-card class="track-form-card" appearance="outlined">
+    <mat-card-content>
+      <form class="track-form" (ngSubmit)="track()">
+        <mat-form-field appearance="outline" class="code-field" floatLabel="always">
+          <mat-label>کد پیگیری</mat-label>
+          <input
+            matInput
+            dir="ltr"
+            placeholder="CT-XXXXXX"
+            [ngModel]="code()"
+            (ngModelChange)="onCodeChange($event)"
+            name="code"
+            autocomplete="off"
+          />
+        </mat-form-field>
+        <button
+          mat-flat-button
+          class="cinema-primary track-submit"
+          type="submit"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            پیگیری تیکت
+            <span aria-hidden="true">←</span>
+          }
+        </button>
+      </form>
+
+      @if (error()) {
+        <div class="track-error" role="alert">
+          <!-- <mat-icon aria-hidden="true">search_off</mat-icon> -->
+          <span>{{ error() }}</span>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (ticket(); as ticket) {
+    <div class="track-result">
+      <div class="status-badge" [class.cancelled]="ticket.booking.cancelledAt" [class.pending]="!ticket.booking.confirmed && !ticket.booking.cancelledAt">
+        {{ statusLabel(ticket) }}
+      </div>
+
+      <mat-card class="ticket-card" appearance="outlined">
+        <div
+          class="ticket-head"
+          [style.background]="'linear-gradient(135deg, ' + ticket.movie.accentFrom + ', ' + ticket.movie.accentTo + ')'"
+        >
+          <span class="ticket-label">CINEMA TICKET</span>
+          <h2>{{ ticket.movie.title }}</h2>
+          <span dir="ltr">{{ ticket.movie.originalTitle }}</span>
+        </div>
+
+        <mat-card-content class="ticket-body">
+          <div class="row">
+            <span class="label">کد پیگیری</span>
+            <span class="value reference-value" dir="ltr">{{ ticket.booking.referenceCode }}</span>
+          </div>
+          <div class="row">
+            <span class="label">تاریخ</span>
+            <span class="value">{{ faDate(ticket.showtime.date) }}</span>
+          </div>
+          <div class="row">
+            <span class="label">ساعت</span>
+            <span class="value">{{ faTime(ticket.showtime.time) }}</span>
+          </div>
+          <div class="row">
+            <span class="label">سالن</span>
+            <span class="value">{{ ticket.showtime.hall }} · {{ ticket.showtime.format }}</span>
+          </div>
+          <div class="row">
+            <span class="label">صندلی‌ها</span>
+            <span class="value seats-value">
+              {{ ticket.booking.seatIds.map((id) => faId(id)).join('، ') }}
+            </span>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="row total-row">
+            <span class="label">مبلغ کل</span>
+            <span class="value total">{{ price(ticket.booking.totalPrice) }} تومان</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

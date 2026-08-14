@@ -55,4 +55,13 @@ export interface Booking {
   totalPrice: number;
   referenceCode: string;
   confirmed: boolean;
+  cancelledAt?: string | null;
+  createdAt?: string;
+}
+
+/** Ticket resolved by its public tracking code (booking + showtime + movie). */
+export interface TrackedTicket {
+  booking: Booking;
+  showtime: Showtime;
+  movie: Movie;
 }

@@ -70,6 +70,10 @@ export class Breadcrumbs {
           );
         }
 
+        if (first === 'track') {
+          return of<Crumb[]>([home, { label: 'پیگیری بلیط' }]);
+        }
+
         if (first === 'checkout') {
           const booking = this.bookingService.booking();
           if (!booking) {

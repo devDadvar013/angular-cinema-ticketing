@@ -22,6 +22,11 @@ export const routes: Routes = [
     title: 'پرداخت | سینماتیکت',
   },
   {
+    path: 'track',
+    loadComponent: () => import('./pages/track/track').then((m) => m.Track),
+    title: 'پیگیری بلیط | سینماتیکت',
+  },
+  {
     path: '**',
     redirectTo: '',
   },

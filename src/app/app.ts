@@ -50,6 +50,12 @@ export class App {
     return path.startsWith('/movies') || fragment === 'movies';
   });
 
+  /** «پیگیری بلیط»: صفحه پیگیری تیکت */
+  protected readonly trackActive = computed(() => {
+    const { path } = this.routeState() ?? this.readRouteState();
+    return path.startsWith('/track');
+  });
+
   private readRouteState(): RouteState {
     const url = this.router.url ?? '';
     const path = url.split('?')[0].split('#')[0];

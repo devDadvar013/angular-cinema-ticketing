@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { Booking } from '../models/movie';
+import { Booking, TrackedTicket } from '../models/movie';
 import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +24,13 @@ export class BookingService {
     return this.http
       .post<Booking>(`${API_BASE_URL}/bookings/${id}/confirm`, null)
       .pipe(tap((booking) => this.current.update(() => booking)));
+  }
+
+  /** Looks up a ticket by its public tracking code (e.g. CT-ABC123). */
+  track(code: string): Observable<TrackedTicket> {
+    return this.http.get<TrackedTicket>(
+      `${API_BASE_URL}/bookings/track/${encodeURIComponent(code)}`,
+    );
   }
 
   clear(): void {
